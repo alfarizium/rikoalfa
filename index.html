@@ -611,6 +611,13 @@
                 touchStartY = evt.changedTouches[0].screenY;
             }, { passive: false });
 
+            // Prevent scrolling when touching the canvas
+            canvas.addEventListener('touchmove', function (evt) {
+                if (!isGameOver) {
+                    evt.preventDefault();
+                }
+            }, { passive: false });
+
             canvas.addEventListener('touchend', function (evt) {
                 if (isGameOver) return;
                 let touchEndX = evt.changedTouches[0].screenX;
