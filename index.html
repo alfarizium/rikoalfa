@@ -409,6 +409,33 @@
                     You can reach me at <a href="mailto:alfarizium@gmail.com">alfarizium@gmail.com</a>.
                 </p>
                 <div class="social-links">
+                    <div class="more-socials-wrapper"
+                        style="position: relative; display: inline-flex; align-items: center;">
+                        <button id="more-btn" aria-label="More Socials"
+                            style="background: none; border: none; cursor: pointer; padding: 0; display: flex; color: var(--text-color); transform: translateY(-3px);">
+                            <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: currentColor;">
+                                <path
+                                    d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                            </svg>
+                        </button>
+                        <div id="more-content" class="social-popup"
+                            style="display: none; position: absolute; top: 50%; right: 100%; transform: translateY(calc(-50% - 5px)); background: var(--bg-color); border: 1px solid var(--border-color); padding: 5px 10px; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-right: 10px; z-index: 100; white-space: nowrap;">
+                            <a href="https://letterboxd.com/alfarizium" target="_blank" rel="noopener noreferrer"
+                                aria-label="Letterboxd" style="display:flex;align-items:center;">
+                                <svg viewBox="0 0 24 24"
+                                    style="width: 24px; height: 24px; fill: currentColor; fill-rule: evenodd;">
+                                    <path
+                                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5z M6 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0 M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0 M18 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                </svg>
+                            </a>
+                            <a href="https://goodreads.com" target="_blank" rel="noopener noreferrer"
+                                aria-label="Goodreads"
+                                style="display:flex;align-items:center; text-decoration: none; color: inherit;">
+                                <span
+                                    style="font-family: serif; font-size: 24px; font-weight: bold; line-height: 1; display: inline-block; transform: translateY(-3px);">g</span>
+                            </a>
+                        </div>
+                    </div>
                     <a href="https://www.instagram.com/alfarizium" target="_blank" rel="noopener noreferrer"
                         aria-label="Instagram">
                         <svg viewBox="0 0 24 24">
@@ -583,6 +610,25 @@
                     });
                 }
             });
+
+            // Social Popup Logic
+            const moreBtn = document.getElementById('more-btn');
+            const moreContent = document.getElementById('more-content');
+
+            // Close popup when clicking outside
+            document.addEventListener('click', (e) => {
+                if (moreContent && moreContent.style.display !== 'none' && !moreContent.contains(e.target) && !moreBtn.contains(e.target)) {
+                    moreContent.style.display = 'none';
+                }
+            });
+
+            if (moreBtn) {
+                moreBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isVisible = moreContent.style.display === 'flex';
+                    moreContent.style.display = isVisible ? 'none' : 'flex';
+                });
+            }
         });
     </script>
 </body>
