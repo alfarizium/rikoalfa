@@ -254,9 +254,7 @@
             overflow-y: auto;
         }
 
-        .project-item:hover .project-card {
-            display: flex;
-        }
+        /* Hover effect removed for click toggle behavior */
 
         @media (max-width: 1200px) {
             .project-item {
@@ -277,12 +275,14 @@
             position: absolute;
             left: 100%;
             top: 50%;
-            transform: translateY(-50%) translateX(-10px);
+            transform: translateY(-50%);
             width: 18px;
             height: 18px;
             margin-left: 8px;
-            opacity: 0;
+            opacity: 0.3;
             fill: var(--text-color);
+            pointer-events: auto;
+            transition: opacity 0.2s;
         }
 
         .project-title {
@@ -290,13 +290,11 @@
             display: inline-block;
         }
 
-        .project-item:hover .gh-icon,
+        .gh-icon:hover,
         .project-item.active .gh-icon {
             opacity: 1;
-            transform: translateY(-50%) translateX(0);
         }
 
-        .project-item:hover .project-card,
         .project-item.active .project-card {
             display: flex;
         }
@@ -336,7 +334,7 @@
             <h2>Selected Projects</h2>
             <ul>
                 <li class="project-item">
-                    <a href="https://github.com/alfarizium" class="project-title">
+                    <a href="https://github.com/alfarizium" class="project-title" target="_blank" rel="noopener noreferrer">
                         Project One
                         <svg class="gh-icon" viewBox="0 0 24 24">
                             <path
@@ -352,7 +350,7 @@
                     </div>
                 </li>
                 <li class="project-item">
-                    <a href="https://github.com/alfarizium" class="project-title">
+                    <a href="https://github.com/alfarizium" class="project-title" target="_blank" rel="noopener noreferrer">
                         Project Two
                         <svg class="gh-icon" viewBox="0 0 24 24">
                             <path
@@ -368,7 +366,7 @@
                     </div>
                 </li>
                 <li class="project-item">
-                    <a href="https://github.com/alfarizium" class="project-title">
+                    <a href="https://github.com/alfarizium" class="project-title" target="_blank" rel="noopener noreferrer">
                         Project Three
                         <svg class="gh-icon" viewBox="0 0 24 24">
                             <path
@@ -475,6 +473,7 @@
             let foodY = 3;
             let trail = [];
             let tail = 5;
+            let inputProcessed = false;
             function resetGame() {
                 playerX = 5;
                 playerY = 5;
@@ -489,6 +488,7 @@
             }
             restartBtn.addEventListener('click', resetGame);
             function game() {
+                inputProcessed = false;
                 if (isGameOver) return;
                 playerX += velocityX;
                 playerY += velocityY;
@@ -530,7 +530,8 @@
                 document.body.classList.toggle('dark-mode');
             });
             function keyPush(evt) {
-                if (isGameOver) return;
+                if (isGameOver || inputProcessed) return;
+                
                 if ([37, 38, 39, 40].includes(evt.keyCode)) {
                     evt.preventDefault();
                 }
@@ -540,6 +541,7 @@
                     case 39: if (velocityX !== -1) { velocityX = 1; velocityY = 0; } break;
                     case 40: if (velocityY !== -1) { velocityX = 0; velocityY = 1; } break;
                 }
+                inputProcessed = true;
             }
             document.addEventListener('keydown', keyPush);
             let touchStartX = 0;
@@ -584,16 +586,19 @@
             const projectLinks = document.querySelectorAll('.project-title');
             projectLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
-                    if (window.innerWidth <= 1200) {
-                        const parentItem = this.closest('.project-item');
-                        if (!parentItem.classList.contains('active')) {
-                            e.preventDefault();
-                            document.querySelectorAll('.project-item').forEach(item => {
-                                item.classList.remove('active');
-                            });
-                            parentItem.classList.add('active');
-                            e.stopPropagation();
-                        }
+                    if (e.target.closest('.gh-icon')) return;
+
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const parentItem = this.closest('.project-item');
+                    const wasActive = parentItem.classList.contains('active');
+
+                    document.querySelectorAll('.project-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+
+                    if (!wasActive) {
+                        parentItem.classList.add('active');
                     }
                 });
             });
@@ -601,7 +606,8 @@
                 const activeItems = document.querySelectorAll('.project-item.active');
                 if (activeItems.length > 0) {
                     activeItems.forEach(item => {
-                        if (!item.contains(e.target)) {
+                        const card = item.querySelector('.project-card');
+                        if (card && !card.contains(e.target)) {
                             item.classList.remove('active');
                         }
                     });
